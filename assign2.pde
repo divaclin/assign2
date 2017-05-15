@@ -1,4 +1,5 @@
 // global variables
+int currentTime = 0;
 float frogX, frogY, frogW, frogH, frogInitX, frogInitY;
 float leftCar1X, leftCar1Y, leftCar1W, leftCar1H;//car1
 float leftCar2X, leftCar2Y, leftCar2W, leftCar2H;//car2
@@ -7,6 +8,13 @@ float rightCar2X, rightCar2Y, rightCar2W, rightCar2H;//car4
 float pondY;
 
 float speed;
+
+float frogXSpeed = 0;
+float frogYSpeed = 0;
+
+float thrustfrogY = 1;
+float thrustfrogX = 1;
+float decay = .97;
 
 int life;
 
@@ -37,6 +45,7 @@ void setup(){
   // initial position of frog
   frogInitX = 304;
   frogInitY = 448;
+  
   
   frogW = 32;
   frogH = 32;
@@ -69,13 +78,16 @@ void draw(){
         text("Press Enter", width/3, height/2);    
         break;
     case FROG_DIE:
-        delay(1000);
+        
+        if(millis()-currentTime >= 1000){
         frogX=frogInitX;
         frogY=frogInitY;
         gameState = GAME_RUN;
+        }
         break;
     case GAME_RUN:
         background(10,110,16);
+        
         
         // draw Pond
         fill(4,13,78);
@@ -89,33 +101,149 @@ void draw(){
         // draw frog
         image(imgFrog, frogX, frogY);
 
+
         // -------------------------------
         // Modify the following code
         // to meet the requirement
         // -------------------------------
         
          //car1 move
-         leftCar1X += speed;
+         leftCar1X += speed*3;
          if (leftCar1X > width){
              leftCar1X = 0;
          }
          image(imgLeftCar1, leftCar1X, leftCar1Y);
   
-         //car2 move
+  
+         //car2 move 
+         leftCar2X += speed*1.1;
+         if (leftCar2X > width){
+             leftCar2X = 0;
+         }
          image(imgLeftCar2, leftCar2X, leftCar2Y);
   
+  
          //car3 move
+         rightCar1X -= speed*2.5;
+         if (rightCar1X < 0){
+             rightCar1X = width;
+         }       
          image(imgRightCar1, rightCar1X, rightCar1Y);
 
+
          //car4 move
+         rightCar2X -= speed*2;
+         if (rightCar2X < 0){
+             rightCar2X = width;
+         }    
          image(imgRightCar2, rightCar2X, rightCar2Y);
   
          float frogCX = frogX+frogW/2;
          float frogCY = frogY+frogH/2;
-         // car1 hitTest
+         
+         
+         
+         
+         // car1 hitTest         
+         float leftCarC1X = leftCar1X+leftCar1W/2;
+         float leftCarC1Y = leftCar1Y+leftCar1H/2;
+          
+         float C=dist(frogCX, frogCY, leftCarC1X, leftCarC1Y);
+         
+         if(C < frogW/2+leftCar1W/2){
+            currentTime = millis();
+            image(imgDeadFrog, frogX, frogY); 
+             life--;
+             gameState = FROG_DIE;
+          }else if(C < frogH/2+leftCar1H/2){
+            currentTime = millis();
+            image(imgDeadFrog, frogX, frogY); 
+             life--;
+             gameState = FROG_DIE;
+          }
+
+         if (life==0){
+          gameState = GAME_LOSE;
+           }
+         
+         if(gameState != GAME_RUN);
+         
+
          // car2 hitTest
+         float leftCarC2X = leftCar2X+leftCar1W/2;
+         float leftCarC2Y = leftCar2Y+leftCar1H/2;
+          
+         float D=dist(frogCX, frogCY, leftCarC2X, leftCarC2Y);
+         
+         if(D < frogW/2+leftCar1W/2){
+           currentTime = millis();
+            image(imgDeadFrog, frogX, frogY); 
+             life--;
+             gameState = FROG_DIE;
+          }else if(D < frogH/2+leftCar1H/2){
+            currentTime = millis();
+            image(imgDeadFrog, frogX, frogY); 
+             life--;
+             gameState = FROG_DIE;
+          }
+
+         if (life==0){
+          gameState = GAME_LOSE;
+           }
+         
+         if(gameState != GAME_RUN);
+         
+         
          // car3 hitTest
+         float rightCarC1X = rightCar1X+rightCar1W/2;
+         float rightCarC1Y = rightCar1Y+rightCar1H/2;
+          
+         float E=dist(frogCX, frogCY, rightCarC1X, rightCarC1Y);
+         
+         if(E < frogW/2+rightCar1W/2){
+           currentTime = millis();
+            image(imgDeadFrog, frogX, frogY); 
+             life--;
+             gameState = FROG_DIE;
+          }else if(E < frogH/2+rightCar1H/2){
+            currentTime = millis();
+            image(imgDeadFrog, frogX, frogY); 
+             life--;
+             gameState = FROG_DIE;
+          }
+
+         if (life==0){
+          gameState = GAME_LOSE;
+           }
+         
+         if(gameState != GAME_RUN);
+         
+         
          // car4 hitTest
+         float rightCarC2X = rightCar2X+rightCar2W/2;
+         float rightCarC2Y = rightCar2Y+rightCar2H/2;
+          
+         float F=dist(frogCX, frogCY, rightCarC2X, rightCarC2Y);
+         
+         if(F < frogW/2+rightCar2W/2){
+           currentTime = millis();
+            image(imgDeadFrog, frogX, frogY); 
+             life--;
+             gameState = FROG_DIE;
+          }else if(F < frogH/2+rightCar2H/2){
+            currentTime = millis();
+            image(imgDeadFrog, frogX, frogY); 
+             life--;
+             gameState = FROG_DIE;
+          }
+
+         if (life==0){
+          gameState = GAME_LOSE;
+           }
+         
+         if(gameState != GAME_RUN);
+         
+         
         break;
     case GAME_WIN:
         background(0);
@@ -133,12 +261,37 @@ void draw(){
 }
 void keyPressed() {
     if (key == CODED /*still needs something*/) {
-
+      
+      if (keyCode == UP){
+        frogY -= 32;
+        if(frogY <= pondY){
+          gameState = GAME_WIN;
+        }
+      }else if (keyCode == DOWN){
+        frogY += 32;
+        if((frogY+32) > height){
+            frogY = height-32;
+        }          
+      }else if (keyCode == LEFT){
+        frogX -= 32;
+         if (frogX < 0){
+            frogX = 0;           
+         }
+      }else if (keyCode == RIGHT){
+        frogX += 32;
+        if((frogX+32) > width){
+          frogX = width-32;
+        }
+      }
     }
+
     if(key==ENTER /*still needs something*/){
+      if(gameState != GAME_RUN){
       gameState = GAME_RUN;
       life=3;
       frogX = frogInitX;
       frogY = frogInitY;
     }
+  }
 }
+
